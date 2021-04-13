@@ -1,14 +1,29 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {Link} from "react-router-dom";
 import {useForm} from 'react-hook-form';
+import {yupResolver} from '@hookform/resolvers/yup';
+import * as yup from "yup";
 
+import { signInRequest } from "~/store/modules/auth/actions";
 import logo from '~/assets/logo.svg';
 
-export default function SignIn({ login }) {
-    const { register, handleSubmit, formState: { errors }, reset } = useForm();
-    const onSubmit = async data => {
-        await login(data.email, data.password);
-        reset();
+const schema = yup.object().shape({
+    email: yup.string().email('Insira um email valido').required('Campo obrigatório'),
+    password: yup.string().min(6, 'Minimo 6 caracteres').required('Campo obrigatório'),
+});
+
+export default function SignIn() {
+    const {register, handleSubmit, formState: {errors}} = useForm(
+        {resolver: yupResolver(schema)}
+    );
+
+    const dispatch = useDispatch();
+    const loading = useSelector(state => state.auth.loading)
+
+    const onSubmit = ({email, password}) => {
+        dispatch(signInRequest(email, password))
+
     }
 
     return (<>
@@ -29,7 +44,7 @@ export default function SignIn({ login }) {
             />
             {errors.email && <span role="alert">{errors.email.message}</span>}
             <input
-                placeholder="Email"
+                placeholder="Senha"
                 id="password"
                 {...register("password", {
                     required: "Campo requerido",
@@ -41,7 +56,7 @@ export default function SignIn({ login }) {
                 type="password"
             />
             {errors.password && <span role="alert">{errors.password.message}</span>}
-            <button type="submit" >Acessar</button>
+            <button type="submit" >{loading ? 'Carregando...' : 'Acessar'}</button>
             <Link to="/register" >Criar conta grátis</Link>
         </form>
     </>

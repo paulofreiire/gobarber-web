@@ -1,14 +1,30 @@
 import React from "react";
+import {useDispatch} from "react-redux";
 import {Link} from "react-router-dom";
 import {useForm} from 'react-hook-form';
+import Switch from 'react-switch';
+import {yupResolver} from '@hookform/resolvers/yup';
+import * as yup from "yup";
+
 
 import logo from '~/assets/logo.svg';
 
-export default function SignIn({ login }) {
-    const { register, handleSubmit, formState: { errors }, reset } = useForm();
-    const onSubmit = async data => {
-        await login(data.email, data.password);
-        reset();
+import {signUpRequest} from "~/store/modules/auth/actions";
+
+const schema = yup.object().shape({
+    name: yup.string().min(3, 'Nome muito curto').required('Campo obrigatório'),
+    email: yup.string().email('Insira um email valido').required('Campo obrigatório'),
+    password: yup.string().min(6, 'Minimo 6 caracteres').required('Campo obrigatório'),
+});
+
+export default function SignUp() {
+    const {register, handleSubmit, formState: {errors} } = useForm(
+        {resolver: yupResolver(schema)}
+    );
+
+    const dispatch = useDispatch()
+    const onSubmit = ({name, email, password}) => {
+        dispatch(signUpRequest(name, email, password))
     }
 
     return (<>
@@ -17,30 +33,17 @@ export default function SignIn({ login }) {
         <form onSubmit={handleSubmit(onSubmit)}>
             <input
                 placeholder="Nome"
-                id="nome"
-                {...register("name", {
-                    required: "Campo requerido",
-                    minLength: {
-                        value: 3,
-                        message: "Seu nome precisa ter pelo menos 3 digitos"
-                    }
-                })}
-                type="email"
+                id="name"
+                {...register("name" )}
             />
-
+            {errors.name && <span>{errors.name.message}</span>}
             <input
                 placeholder="Email"
                 id="email"
-                {...register("email", {
-                    required: "Campo requerido",
-                    pattern: {
-                        value: /S+@S+.S+/,
-                        message: "Insiria um email valido"
-                    }
-                })}
-                type="email"
+                {...register("email")}
+
             />
-            {errors.email && <span role="alert">{errors.email.message}</span>}
+            {errors.email && <span>{errors.email.message}</span>}
             <input
                 placeholder="Senha"
                 id="password"
@@ -53,7 +56,7 @@ export default function SignIn({ login }) {
                 })}
                 type="password"
             />
-            {errors.password && <span role="alert">{errors.password.message}</span>}
+            {errors.password && <span>{errors.password.message}</span>}
             <button type="submit">Criar conta grátis</button>
             <Link to="/">Já tenho login</Link>
         </form>
