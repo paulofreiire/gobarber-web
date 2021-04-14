@@ -14,16 +14,17 @@ export function* signIn({payload}) {
         });
 
         const {token, user} = response.data;
-
-        if (!user.provider) {
-            toast.error('Usuario não é prestador');
-        }
+        console.log(user)
 
         api.defaults.headers['authorization'] = `Bearer ${token}`
 
         yield put(signInSuccess(token, user))
 
-        history.push('/dashboard')
+        if (!user.provider) {
+            history.push('/appointments')
+        } else {
+            history.push('/dashboard')
+        }
 
 
     } catch (e) {
@@ -35,10 +36,10 @@ export function* signIn({payload}) {
 
 export function* signUp({payload}) {
     try {
-        const {name, email, password} = payload
+        const {name, email, password, provider} = payload
 
         yield call(api.post, 'users', {
-            name, email, password, provider: true
+            name, email, password, provider: provider
         });
 
         history.push('/')
@@ -49,17 +50,17 @@ export function* signUp({payload}) {
     }
 }
 
-export function setToken({payload}){ 
-    if(!payload) return;
+export function setToken({payload}) {
+    if (!payload) return;
 
-    const { token } = payload.auth
+    const {token} = payload.auth
 
     if (token) {
         api.defaults.headers['authorization'] = `Bearer ${token}`
     }
 }
 
-export function signOut(){
+export function signOut() {
     history.push('/')
 }
 

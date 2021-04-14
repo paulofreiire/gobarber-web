@@ -2,7 +2,7 @@ import produce from 'immer'
 
 const INITIAL_STATE = {
     profile: null,
-
+    provider: false
 }
 
 export default function auth(state = INITIAL_STATE, action) {
@@ -10,6 +10,7 @@ export default function auth(state = INITIAL_STATE, action) {
         switch (action.type) {
             case '@auth/SIGN_IN_SUCCESS': {
                 draft.profile = action.payload.user;
+                draft.provider = action.payload.user.provider
                 break;
             }
 

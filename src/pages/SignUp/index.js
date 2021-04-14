@@ -1,10 +1,12 @@
-import React from "react";
+import React, {useState} from "react";
 import {useDispatch} from "react-redux";
 import {Link} from "react-router-dom";
 import {useForm} from 'react-hook-form';
 import Switch from 'react-switch';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
+
+import { ToggleButton } from './styles'
 
 
 import logo from '~/assets/logo.svg';
@@ -18,13 +20,22 @@ const schema = yup.object().shape({
 });
 
 export default function SignUp() {
-    const {register, handleSubmit, formState: {errors} } = useForm(
+    const [provider, setProvider] = useState(false)
+    const {register, handleSubmit, setValue, formState: {errors} } = useForm(
         {resolver: yupResolver(schema)}
     );
 
+    register("provider")
+    setValue("provider", provider)
     const dispatch = useDispatch()
-    const onSubmit = ({name, email, password}) => {
-        dispatch(signUpRequest(name, email, password))
+    const onSubmit = ({name, email, password, provider}) => {
+        dispatch(signUpRequest(name, email, password, provider))
+    }
+
+    function handleChange() {
+        setProvider(!provider);
+        setValue("provider", !provider);
+        console.log(provider)
     }
 
     return (<>
@@ -57,6 +68,16 @@ export default function SignUp() {
                 type="password"
             />
             {errors.password && <span>{errors.password.message}</span>}
+            <ToggleButton>
+            <label>
+                <Switch
+                    onChange={handleChange}
+                    checked={provider}
+                    className="provider"
+                />
+                <span>Provider</span>
+            </label>
+            </ToggleButton>
             <button type="submit">Criar conta grátis</button>
             <Link to="/">Já tenho login</Link>
         </form>

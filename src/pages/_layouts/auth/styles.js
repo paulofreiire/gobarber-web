@@ -31,6 +31,7 @@ export const Content = styled.div`
       &::placeholder {
         color: rgba(255, 255, 255, 0.7);
       }
+      
     }
     
     span {

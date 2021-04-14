@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import {darken} from "polished";
 
 export const Container = styled.div`
   max-width: 600px;
@@ -12,10 +13,6 @@ export const Container = styled.div`
     align-self: center;
     align-items: center;
 
-    button {
-      border: 0;
-      background: none;
-    }
 
     strong {
       color: #fff;
@@ -32,26 +29,30 @@ export const Container = styled.div`
     grid-gap: 15px;
     margin-top: 30px;
   }
-
 `;
 
-export const Time = styled.li`
-  padding-left: 20px;
+export const Button = styled.button`
+  margin: 5px 0 0;
+  height: 44px;
+  background: ${props => props.color};
+  font-weight: bold;
+  color: #fff;
+  border: 0;
   border-radius: 4px;
-  background: white;
+  font-size: 16px;
+  transition: background 0.2s;
+  padding-left: 10px;
 
-  opacity: ${props => props.past ? 0.6 : 1};
-  
-  strong {
-    display: block;
-    color: ${props => props.available ? '#999' : '#7159c1'};
-    font-size: 20px;
-    font-weight: normal;
+  &:hover {
+    background: ${props => darken(0.03, props.color)};
   }
 
-  span {
-    display: block;
-    margin-top: 3px;
-    color: ${props => props.available ? '#999' : '#666'};
+`
+
+export const TomatoButton = styled(Button)`
+  background: #ff3300;
+
+  &:hover {
+    background: ${darken(0.03, '#ff3300')};
   }
 `

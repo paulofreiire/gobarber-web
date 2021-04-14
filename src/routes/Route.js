@@ -6,15 +6,21 @@ import AuthLayout from '~/pages/_layouts/auth';
 import DefaultLayout from '~/pages/_layouts/default';
 
 import {store} from "~/store/";
+import {useSelector} from "react-redux";
 
 export default function RouteWrapper({component: Component, isPrivate, ...rest}) {
-    const { signed } = store.getState().auth;
+    const {signed} = store.getState().auth;
+    const { provider } = store.getState().user;
+    console.log(store.getState())
+
 
     if (!signed && isPrivate) {
         return <Redirect to="/"/>;
     }
 
     if (signed && !isPrivate) {
+        if (!provider)
+            return <Redirect to="/appointments"/>;
         return <Redirect to="/dashboard"/>;
     }
 

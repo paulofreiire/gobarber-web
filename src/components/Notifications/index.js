@@ -45,7 +45,7 @@ export default function Notifications(props) {
 
         setNotifications(
             notifications.map(notification => (
-                notification._id === id ? {...notifications, read: true} : notification
+                notification._id === id ? {...notification, read: true} : notification
             ))
         )
     }
@@ -59,7 +59,7 @@ export default function Notifications(props) {
             <NotificationList visible={visible}>
                 <Scroll>
                     {notifications.map(notification => (
-                        <Notification key={notification.id} unread={!notification.read}>
+                        <Notification key={notification._id} unread={!notification.read}>
                             <p>{notification.content}</p>
                             <time>{notification.timeDistance}</time>
                             {!notification.read &&

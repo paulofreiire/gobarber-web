@@ -8,7 +8,6 @@ import AvatarInput from "~/pages/Profile/AvatarInput";
 
 export default function Profile() {
     const profile = useSelector(state => state.user.profile);
-    console.log(profile)
 
     const methods = useForm();
 
@@ -34,7 +33,7 @@ export default function Profile() {
 
                 <input type="password" id="oldPassword"
                        placeholder="Sua senha antiga" {...methods.register("oldPassword")}/>
-                <input type="password" id="Password" placeholder="Sua nova senha" {...methods.register("Password")}/>
+                <input type="password" id="Password" placeholder="Sua nova senha" {...methods.register("password")}/>
                 <input type="password" id="confirmPassword"
                        placeholder="Confirme sua senha" {...methods.register("confirmPassword")}/>
 

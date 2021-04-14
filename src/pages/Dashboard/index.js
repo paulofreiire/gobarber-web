@@ -1,5 +1,5 @@
 import React, {useState, useMemo, useEffect} from "react";
-import {format, addDays, subDays, setHours, setMinutes, setSeconds, isBefore, isEqual, parseISO} from 'date-fns'
+import {format, addDays, subDays, setMilliseconds, setHours, setMinutes, setSeconds, isBefore, isEqual, parseISO} from 'date-fns'
 import {utcToZonedTime} from 'date-fns-tz'
 import {MdChevronLeft, MdChevronRight} from "react-icons/all";
 import pt from 'date-fns/locale/pt';
@@ -28,7 +28,7 @@ export default function Dashboard() {
             const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
             const data = range.map(hour => {
-                const checkDate = setSeconds(setMinutes(setHours(date, hour), 0), 0)
+                const checkDate = setMilliseconds(setSeconds(setMinutes(setHours(date, hour), 0), 0), 0)
                 const compareDate = utcToZonedTime(checkDate, timezone)
 
                 return {
@@ -43,7 +43,8 @@ export default function Dashboard() {
             setSchedule(data);
 
         }
-    }, [])
+        loadSchedule();
+    }, [date])
 
     function handlePrevDay() {
         setDate(subDays(date, 1))
@@ -65,22 +66,12 @@ export default function Dashboard() {
         </header>
 
         <ul>
-            <Time past>
-                <strong>08:00</strong>
-                <span>Paulo Freire</span>
-            </Time>
-            <Time available>
-                <strong>09:00</strong>
-                <span>Em aberto</span>
-            </Time>
-            <Time available>
-                <strong>10:00</strong>
-                <span>Em aberto</span>
-            </Time>
-            <Time>
-                <strong>11:00</strong>
-                <span>Paulo Freire</span>
-            </Time>
+            {schedule.map(time => (
+                <Time key={time.time} past={time.past} available={!time.appointment}>
+                    <strong>{time.time}</strong>
+                    <span>{time.appointment ? time.appointment.user.name : 'Em aberto'}</span>
+                </Time>
+            ))}
         </ul>
     </Container>
 
